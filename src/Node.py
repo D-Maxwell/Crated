@@ -1,5 +1,9 @@
 class Node(object):
 
+    """
+    Nodes are made of an id, data, and children. These may all be invidivually omitted.
+    """
+
     # Nodes with no data are folders
     def __init__(self,id:str=None,data=None,children:list=None):
         self.id = id
