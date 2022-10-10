@@ -5,7 +5,7 @@ from Crate import Crate
 
 # Contains all pages
 dock = Node("root","",[
-    Cargo("index", "freight01.frg")
+    Cargo("index", "src/freight01.frg")
 ])
 
 
@@ -27,6 +27,7 @@ def ship(node:Cargo):
             children = []
 
             marker:int = 0
+            markerEqual:int = 0
             # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #  tag#thisisquitealongid.andthisisaclass(pos=[0,24]) #
             # ----|------------------|--------------------------- #
@@ -43,21 +44,27 @@ def ship(node:Cargo):
                 #v# "rollback" search # to be done dynamically (dicts, strings as var pointers, ...)
 
                 if marker == 0 and text[line][idx] in ['#','.','(']:
-                    tag = text[line][indent*4 + marker : idx]
-                    print("tag:",tag)
+                    tag = text[line][marker : idx]
+                    #print("tag:",tag)
                 if text[line][marker] == '#' and text[line][idx] in ['.','(']:
-                    id = text[line][indent*4 + marker + 1 : idx]
-                    print("id",id)
+                    id = text[line][marker + 1 : idx]
+                    #print("id",id,text[line][marker + 1],marker,idx)
                 if text[line][marker] == '.' and text[line][idx] == '(':
-                    class_ = text[line][indent*4 + marker + 1 : idx]
-                    print("class",class_)
+                    class_ = text[line][marker + 1 : idx]
+                    #print("class",class_)
+                if text[line][marker] in ['(',','] and text[line][idx] in [',',')']:
+                    data[text[line][marker + 1 : markerEqual]] = text[line][markerEqual : idx]
+                    #print("class",class_)
 
 
                 #v# set marker onto any special character
 
-                if idx == 0 or text[line][idx] == '#' or text[line][idx] == '.' or text[line][idx] == '(':
+                if idx == indent*4 or text[line][idx] == '#' or text[line][idx] == '.' or text[line][idx] == '(':
                     marker = idx
-                print(idx,marker)
+                    #print(marker, text[line][idx])
+                if text[line][marker] == '=':
+                    markerEqual = idx
+                #print(idx,marker)
 
 
 
