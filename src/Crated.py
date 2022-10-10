@@ -14,6 +14,7 @@ dock = Node("root","",[
 def ship(node:Cargo):
 
     cargo = []
+    break_chrs = ['#','.','']
 
     try:
         file = open(node.data)
@@ -28,7 +29,7 @@ def ship(node:Cargo):
             children = []
 
             marker:int = 0
-            marker_equal:int = 0
+            marker_arg:int = 0
             # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #  tag#thisisquitealongid.andthisisaclass(pos=[0,24]) #
             # ----|------------------|--------------------------- #
@@ -42,17 +43,20 @@ def ship(node:Cargo):
 
                 #v# "rollback" search # to be done dynamically (dicts, strings as var pointers, ...)
 
-                if marker == indent*4 and text[line][idx] in ['#','.','(']:
-                    tag = text[line][marker : idx]
+                #if text[line][idx] == '.': print("HEY2",marker, idx, text[line][idx])
 
-                if text[line][marker] == '#' and text[line][idx] in ['.','(']:
+                if marker == indent*4 and text[line][marker] not in ['#','.','('] and text[line][idx] in ['#','.','(']:
+                    tag = text[line][marker : idx]
+                    print("HEY",marker,idx, text[line][marker])
+
+                if text[line][marker] == '#' and text[line][idx] in ['#','.','(']:
                     id = text[line][marker + 1 : idx]
 
-                if text[line][marker] == '.' and text[line][idx] == '(':
+                if text[line][marker] == '.' and text[line][idx] in ['#','.','(']:
                     class_ = text[line][marker + 1 : idx]
 
                 if text[line][marker] in ['(',','] and text[line][idx] in [',',')']:
-                    data[text[line][marker + 1 : marker_equal]] = text[line][marker_equal : idx]
+                    data[text[line][marker + 1 : marker_arg]] = text[line][marker_arg : idx]
 
 
 
@@ -62,7 +66,7 @@ def ship(node:Cargo):
                     marker = idx
                     #print("m '",marker, "' idx '",idx, "' line '", line, "'", sep='')
                 if text[line][marker] == '=':
-                    marker_equal = idx
+                    marker_arg = idx
 
 
                 # if text[line][idx] in ['#','.','(']:
@@ -101,6 +105,7 @@ def ship(node:Cargo):
                 # reached End of Line
                 if idx == len(text[line])-1:
                     cargo.append(Crate(tag,id,class_,pos=data.get("pos"),size=data.get("size"),children=children))
+                    print("tag",tag,"id",id,"class",class_)
 
     except FileNotFoundError:
         log('ERROR', "[ERROR] ", "File at path '", node.data, "' could not be found. Make sure to include the '.frg' suffix, and check the scope.")

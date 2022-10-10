@@ -1,6 +1,6 @@
 a#id(pos=[12,12],size=[16,12])
     ht#abbb(size=[8,8])
 bruh#b()
-        hello()
+        .group1()
     idoubtthiswillwork()
     ()

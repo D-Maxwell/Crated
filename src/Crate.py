@@ -30,5 +30,5 @@ class Crate(Node):
         return f"{self.tag}{'#' if self.id != (None or '') else ''}{self.id}{'.' if self.class_ != (None or '') else ''}{self.class_}"
 
 
-    def toRect(self):
-        return [self.pos,self.size]
+    # def toRect(self):
+    #     return [self.pos,self.size]
