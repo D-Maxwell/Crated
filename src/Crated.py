@@ -1,3 +1,4 @@
+from Console import log
 from Node import Node
 from Cargo import Cargo
 from Crate import Crate
@@ -5,7 +6,7 @@ from Crate import Crate
 
 # Contains all pages
 dock = Node("root","",[
-    Cargo("index", "src/freight01.frg")
+    Cargo("index", "freight01.frg")
 ])
 
 
@@ -27,7 +28,7 @@ def ship(node:Cargo):
             children = []
 
             marker:int = 0
-            markerEqual:int = 0
+            marker_equal:int = 0
             # # # # # # # # # # # # # # # # # # # # # # # # # # # #
             #  tag#thisisquitealongid.andthisisaclass(pos=[0,24]) #
             # ----|------------------|--------------------------- #
@@ -45,28 +46,24 @@ def ship(node:Cargo):
 
                 if marker == 0 and text[line][idx] in ['#','.','(']:
                     tag = text[line][marker : idx]
-                    #print("tag:",tag)
+
                 if text[line][marker] == '#' and text[line][idx] in ['.','(']:
                     id = text[line][marker + 1 : idx]
-                    #print("id",id,text[line][marker + 1],marker,idx)
+
                 if text[line][marker] == '.' and text[line][idx] == '(':
                     class_ = text[line][marker + 1 : idx]
-                    #print("class",class_)
+
                 if text[line][marker] in ['(',','] and text[line][idx] in [',',')']:
-                    data[text[line][marker + 1 : markerEqual]] = text[line][markerEqual : idx]
-                    #print("class",class_)
+                    data[text[line][marker + 1 : marker_equal]] = text[line][marker_equal : idx]
+
 
 
                 #v# set marker onto any special character
 
                 if idx == indent*4 or text[line][idx] == '#' or text[line][idx] == '.' or text[line][idx] == '(':
                     marker = idx
-                    #print(marker, text[line][idx])
                 if text[line][marker] == '=':
-                    markerEqual = idx
-                #print(idx,marker)
-
-
+                    marker_equal = idx
 
 
                 # if text[line][idx] in ['#','.','(']:
@@ -106,8 +103,11 @@ def ship(node:Cargo):
                 if idx == len(text[line])-1:
                     cargo.append(Crate(tag,id,class_,pos=data.get("pos"),size=data.get("size"),children=children))
 
-    finally:
+    except FileNotFoundError:
+        log('ERROR', "[ERROR] ", "File at path '", node.data, "' could not be found. Make sure to include the '.frg' suffix, and check the scope.")
+    else:
         file.close()
+    finally:
         return cargo
 
 
