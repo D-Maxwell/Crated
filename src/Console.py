@@ -1,9 +1,10 @@
 logTypes = {
+    'a' : '\033[95m',
     'ERROR' : '\033[91m',
     'WARN' : '\033[93m'
 }
 
-def log(type, *args):
+def log(type='', *args):
     """
     :param type: ERROR,WARN -> Text color
     :param args: Any amount of strings

@@ -21,7 +21,7 @@ def ship(node:Cargo):
 
         for line in range(len(text)):
 
-            tag = None
+            tag = ""
             id = ""
             class_ = ""
             data = {}
@@ -36,15 +36,13 @@ def ship(node:Cargo):
             #   marker              idx           | -> id |       #
             # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+            indent:int = text[line].count(" " * 4) # amount of spaces required, will be dynamic soon enough
+
             for idx in range(len(text[line])):
-
-
-                indent:int = text[line].count(" " * 4) # amount of spaces required, will be dynamic soon enough
-
 
                 #v# "rollback" search # to be done dynamically (dicts, strings as var pointers, ...)
 
-                if marker == 0 and text[line][idx] in ['#','.','(']:
+                if marker == indent*4 and text[line][idx] in ['#','.','(']:
                     tag = text[line][marker : idx]
 
                 if text[line][marker] == '#' and text[line][idx] in ['.','(']:
@@ -62,6 +60,7 @@ def ship(node:Cargo):
 
                 if idx == indent*4 or text[line][idx] == '#' or text[line][idx] == '.' or text[line][idx] == '(':
                     marker = idx
+                    #print("m '",marker, "' idx '",idx, "' line '", line, "'", sep='')
                 if text[line][marker] == '=':
                     marker_equal = idx
 
