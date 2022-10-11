@@ -6,7 +6,7 @@ from Crate import Crate
 
 # Contains all pages
 dock = Node("root","",[
-    Cargo("index", "freight01.frg")
+    Cargo("index", "freight01a.frg")
 ])
 
 
@@ -55,13 +55,6 @@ def ship(node:Cargo):
                 if text[line][marker] in ['(',','] and text[line][idx] in [',',')']:
                     if marker_arg == 0: marker_arg = marker
                     data[text[line][marker + 1 : marker_arg]] = text[line][marker_arg + 1 : idx]
-                    #print(marker, marker_arg)
-
-
-
-
-                # if text[line][marker] == '(' and text[line][idx] == ',':
-
 
 
                 #v# set marker onto any special character
@@ -73,50 +66,16 @@ def ship(node:Cargo):
                 if text[line][idx] == '=':
                     marker_arg = idx
 
-                # arg, val = "", ""
-                # if text[line][idx] == '=':
-                #     arg = text[line][marker : idx]
-                #     #data_idx = idx + 1
-                #
-                # # equal amount of brackets not to catch unwanted commas
-                # if text[line][idx] in [',',')'] and text[line][0 : idx].count('[') == text[line][0 : idx].count(']'):
-                #     val = text[line][marker_arg : idx]
-                #     #data_idx = idx + 1
-                #     data[arg] = val
-                #     arg, val = "", ""
 
-                # if text[line][idx] in ['#','.','(']:
-                #     if (tag == "" or tag is None) and text[line][idx] == '#':
-                #         tag = text[line][indent*4+marker : idx]
-                #     if (id == "" or id is None) and text[line][idx] == '.':
-                #         id = text[line][indent*4+marker : idx]
-                #         print(tag, idx, text[line][idx])
-                #     if (class_ == "" or class_ is None) and text[line][idx] == '(':
-                #         class_ = text[line][indent*4+marker : idx]
-                #
-                # marker = 0 if (tag == "" or tag is None) else idx if text[line][idx] in ['#','.'] else None
-                # marker = idx if text[line][idx] in ['#','.'] else marker
-                #
-                #
-                # if id == "" or id is None:
-                #     if text[line][idx] == '#':
-                #         marker = idx
-                #     if text[line][idx] == '(':
-                #         id = text[line][indent*4+marker : idx]
-                #         data_idx = idx + 1
-                #         print('/','>'*indent, id, sep='')
-                #         marker = None
-                # else:
-
-
-                # reached End of Line
+                #v# reached End of Line
 
                 if idx == len(text[line])-1:
                     cargo.append(Crate(tag,id,class_,pos=data.get("pos"),size=data.get("size"),children=children))
                     print("tag",tag,"id",id,"class",class_,"data",data)
 
     except FileNotFoundError:
-        log('ERROR', "[ERROR] ", "File at path '", node.data, "' could not be found. Make sure to include the '.frg' suffix, and check the scope.")
+        log(f"File at path '{node.data}' could not be found. Make sure to include the '.frg' suffix, and check the scope.",
+            type='ERROR')
     else:
         file.close()
     finally:
