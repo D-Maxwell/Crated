@@ -5,7 +5,7 @@ class Node(object):
     """
 
     # Nodes with no data are folders
-    def __init__(self,id:str=None,data=None,children:list=None):
+    def __init__(self,id=None,data=None,children:list=None):
         self.id = id
         self.data = data
         self.children = children
