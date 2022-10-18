@@ -86,3 +86,5 @@ dock = Dock("root","",[
 #ship(dock["index"])
 dock.ship()
 print(dock["index"].freight)
+for crate in dock["index"].freight:
+    print(crate.attributes)
