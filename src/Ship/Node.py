@@ -1,4 +1,4 @@
-class Node(object):
+class Node:
 
     """
     Nodes are made of an id, data, and children. These may all be invidivually omitted.
@@ -10,17 +10,7 @@ class Node(object):
         self.data = data
         self.children = children
 
-    # def __iter__(self):
-    #     self.iter = 0
-    #     return self
-    #
-    # def __next__(self):
-    #     if self.iter <= len(self.children):
-    #         self.iter += 1
-    #         return self.children[self.iter]
-
     def __getitem__(self, item):
-        # print(self.children[item])
         if type(item) == str:
             for e in self.children:
                 if item == e.id:
