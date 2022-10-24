@@ -1,29 +1,33 @@
 from src.Ship.Node import Node
+from src.Ship.Tags.Rect import Rect
 
 # Tags = {
 #     ['','rect'] : 'Rect',
 #     ['txt','text'] : 'Text'
 # }
 
-class Crate(Node):
+tag = Rect
+
+class Crate(Node,Rect):
     """
     Node of type Crate.
     Crates are made of an id, a class, arguments, and children.
     These may all be individually omitted.
     """
 
-    def __init__(self,tag=[],id=[],class_=[], attributes={}, children=[]):
+    def __init__(self):
 
-        super().__init__([tag,id,class_],attributes,children)
-        delattr(self,"data")
+        #super().__init__([tag,id,class_],attributes,children)
+        super(Node, self).__init__()
+        super(Rect, self).__init__()
+        #delattr(self,"data")
 
         self.rank = 0
-        self.tag = tag
-        self.id = id
-        self.class_ = class_
-        self.attributes = attributes
-        #self.pos = pos
-        #self.size = size
+        self.tag = []
+        self.id = []
+        self.class_ = []
+        self.attributes = {}
+        self.children = []
 
     def __repr__(self):
         output = ""
@@ -69,4 +73,3 @@ class Crate(Node):
                     self.attributes[line[keychars[idx][0]+1 : equal]] = line[equal+1 : keychars[idx+1][0]]
 
         #print(keychars)
-
