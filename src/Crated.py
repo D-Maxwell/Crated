@@ -1,13 +1,11 @@
-from Console import log
-from Node import Node
-from Dock import Dock
-from Cargo import Cargo
-from Crate import Crate
-
+from ext.Console import log
+from Ship.Dock import Dock
+from Ship.Cargo import Cargo
 
 # Contains all pages
 dock = Dock("root","",[
-    Cargo("index", "freight01.frg")
+    Cargo("index", "Freight/freight01.frg"),
+    Cargo("something", "Freight/freight02.frg")
 ])
 
 
@@ -85,6 +83,6 @@ dock = Dock("root","",[
 
 #ship(dock["index"])
 dock.ship()
-print(dock["index"].freight)
-for crate in dock["index"].freight:
-    print(crate.attributes)
+for crate in dock["something"].freight:
+    log(f"{crate.rank//4*'> '}{crate} {crate.attributes}",
+        type='INFO')
