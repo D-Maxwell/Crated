@@ -4,6 +4,6 @@ class Dock(Node):
     def __init__(self,id:str=None,data=None,children:list=None):
         super().__init__(id,data,children)
 
-    def ship(self):
+    def ship(self, *cargo):
         for cargo in self.children:
             cargo.load()

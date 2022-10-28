@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 class Node:
 
     """
@@ -19,3 +21,7 @@ class Node:
         #     return self.children[item]
         if type(item) == int:
             return self.children[item]
+
+    @abstractmethod
+    def hook(self, path:str):
+        pass

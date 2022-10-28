@@ -1,2 +1,2 @@
-#main(pos=[64,64],size=[16,16],bg="FF00FF")
+#main(pos=["64R",64],size=[16,16],bg=FF00FF)
     ()

@@ -1,9 +1,17 @@
 from ext.Console import log
+from Pygame.Interface import PygameDock
 from Ship.Dock import Dock
 from Ship.Cargo import Cargo
 
+
+def hook(self, path:str):
+    for idx in range(len(path)):
+        pass
+
+
+
 # Contains all pages
-dock = Dock("root","",[
+dock = PygameDock("root","",[
     Cargo("index", "Freight/freight01.frg"),
     Cargo("something", "Freight/freight02.frg")
 ])
@@ -86,3 +94,17 @@ dock.ship()
 for crate in dock["something"].freight:
     log(f"{crate.rank//4*'> '}{crate} {crate.attributes}",
         type='INFO')
+
+import pygame
+
+pygame.init()
+
+dock.goto(dock["something"])
+
+Running = True
+while Running:
+    pygame.display.update()
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            Running = False
+            pygame.quit()

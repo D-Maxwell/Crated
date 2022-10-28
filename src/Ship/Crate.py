@@ -1,14 +1,15 @@
 from src.Ship.Node import Node
-from src.Ship.Tags.Rect import Rect
+#from src.Ship.Tags.Rect import Rect
 
 # Tags = {
 #     ['','rect'] : 'Rect',
 #     ['txt','text'] : 'Text'
 # }
 
-tag = Rect
+#tag = Rect
 
-class Crate(Node,Rect):
+
+class Crate(Node):
     """
     Node of type Crate.
     Crates are made of an id, a class, arguments, and children.
@@ -19,15 +20,19 @@ class Crate(Node,Rect):
 
         #super().__init__([tag,id,class_],attributes,children)
         super(Node, self).__init__()
-        super(Rect, self).__init__()
+        #super(Rect, self).__init__()
         #delattr(self,"data")
+
+        self.PrimitiveTags = {
+            "Rect" : ["rect","Rect",""] # tag will never contain an empty string, thus last element serves no purpose
+        }
 
         self.rank = 0
         self.tag = []
         self.id = []
         self.class_ = []
         self.attributes = {}
-        self.children = []
+        #self.children = []
 
     def __repr__(self):
         output = ""
@@ -71,5 +76,64 @@ class Crate(Node,Rect):
                     #self.attributes[line[keychars[idx][0] : str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=")]] = line[str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=") : keychars[idx+1][0]]
                     equal = keychars[idx][0] + str(line[keychars[idx][0] : keychars[idx+1][0]]).find('=')
                     self.attributes[line[keychars[idx][0]+1 : equal]] = line[equal+1 : keychars[idx+1][0]]
+                    # out = []
+                    # key = line[keychars[idx][0]+1 : equal]
+                    # for subIdx in range(len(self.attributes[key])):
+                    #     if self.attributes[key][subIdx] == '[':
+                    #         out.append([])
+                        # elif self.attributes[key][subIdx] in ["'",'"']:
+                        #     marker = subIdx
+                        #     while self.attributes[key][subIdx] not in ["'",'"'] and marker != subIdx:
+
+
 
         #print(keychars)
+
+    def inherit(self):
+        """Thanks to Socradeez#1059. Learning everyday.
+        I feel stupid this is so short and simple"""
+        #Rect.__init__(self)
+
+        for i in self.PrimitiveTags:
+            if len(self.tag)==0 or self.tag[0] in self.PrimitiveTags[i]:
+                #print(globals())
+                return i
+        #print(self.__class__)
+        return self.__class__
+                # print(i)
+                # print(globals())
+                # globals()[i].__init__(self)
+                #self = globals()[i]
+                # for attr in self.attributes:
+                #     if attr in globals()[i].__dict__:
+                #         vars(self)[attr] = self.attributes[attr]
+                # #print(vars(globals()[i]))
+                # print(self.pos)
+
+
+    def hook(self, path:str):
+
+        tag = id = class_ = None
+
+        # deconstruct path
+        for idx in range(len(path)):
+            marker = idx
+            if path[idx] in ['#','.','(']:
+                if marker == 0:
+                    tag = path[marker:idx]
+                if path[marker] == '#':
+                    id = path[marker:idx]
+                if path[marker] == '.':
+                    class_ = path[marker:idx]
+            #while path[idx] not in ['#','.','(',')']:
+
+        print(tag,id,class_)
+        # find matching crate
+        out = []
+        for crate in self.cargo.freight:
+            if (tag is None or crate.tag == tag) and (id is None or crate.id == id) and (class_ is None or crate.class_ == class_):
+                out.append(crate)
+        return out
+
+# c = Crate()
+# c.hook("#main")
