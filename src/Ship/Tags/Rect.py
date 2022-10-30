@@ -29,9 +29,11 @@ class Rect(Crate):
                 if self.pos[idx].__contains__("R"):
                     mode = "R"
 
+                # exclude "", temp
                 self.pos[idx] = int(self.pos[idx][0:-1])
 
-                if mode == "R":
-                    #self.pos[idx] += self.hook("#main")[0]
-                    #self.pos[idx] += self.parent.pos[idx]
-                    pass
+                if self.parent is not None:
+                    if mode == "R":
+                        #self.pos[idx] += self.hook("#main")[0]
+                        self.pos[idx] += self.parent.pos[idx]
+                        #pass
