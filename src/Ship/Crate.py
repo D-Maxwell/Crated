@@ -28,6 +28,7 @@ class Crate(Node):
         }
 
         self.rank = 0
+        self.parent = None
         self.tag = []
         self.id = []
         self.class_ = []
