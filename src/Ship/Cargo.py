@@ -2,7 +2,15 @@ from src.Ship import Crate
 from src.ext.Console import log
 from src.Ship.Node import Node
 from src.Ship.Crate import Crate
-from src.Ship.Tags.Rect import Rect
+
+
+def swap(arg:list):
+    out = []
+    for idx in range(len(arg)):
+        e = arg[idx]
+        out.append(arg[-1 - idx])
+    return out
+
 
 class Cargo(Node):
     """
@@ -33,14 +41,24 @@ class Cargo(Node):
 
 
                 crate.__class__ = globals()[crate.inherit()] if crate.inherit() != crate.__class__ else crate.__class__
-
-                prevLines = lines[0:idx].swap()
-                for subIdx in range(len(lines[0:idx])):
-                    print(lines[0:idx][subIdx])
-                    if line.count("    ") == lines[0:idx][subIdx].count("    ") - 1:
-                        crate.parent = self.freight[idx-subIdx]
-
                 crate.__init__()
+
+                prevLines = swap(lines[0:idx])
+                print("idx",idx, "line",lines[idx], "prev",prevLines)
+                for subIdx in range(len(prevLines)):
+                    # print("prevLines:",prevLines)
+                    # print(self.freight)
+                    # print(prevLines[subIdx])
+                    # print(idx, subIdx)
+                    # print()
+                    #print("sub",subIdx)
+                    #if line.count("    ") == prevLines[subIdx].count("    ")+1:
+                    if prevLines[subIdx].count("    ") < line.count("    "):
+                        #print("frg",self.freight)
+                        crate.parent = self.freight[idx-subIdx-1]
+                        #print(crate.parent)
+                        break
+
                 crate.pack(line)
 
                 #crate = type('Crate',(Rect,), dict(Crate.__dict__))
