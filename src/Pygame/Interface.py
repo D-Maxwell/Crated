@@ -35,7 +35,7 @@ def rgba(arg):
 class PygameDock(Dock):
     def __init__(self,id:str=None,data=None,children:list=None):
         super().__init__(id,data,children)
-        self.surface = pygame.display.set_mode((1280,720))
+        self.surface = pygame.display.set_mode((1280,720),flags=pygame.RESIZABLE)
     def ship(self, *cargo):
         super().ship(*cargo)
         for cargo in self.children:
