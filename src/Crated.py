@@ -1,12 +1,10 @@
-from ext.Console import log
 from Pygame.Interface import PygameDock
-from Ship.Dock import Dock
 from Ship.Cargo import Cargo
+from ext.Console import log
 
-
-def hook(self, path:str):
-    for idx in range(len(path)):
-        pass
+# def hook(self, path:str):
+#     for idx in range(len(path)):
+#         pass
 
 
 
@@ -95,16 +93,24 @@ for crate in dock["something"].freight:
     log(f"{crate.rank//4*'> '}{crate} {crate.attributes}",
         type='INFO')
 
-import pygame
 
-pygame.init()
+
+import pygame as pg
+
+pg.init()
 
 dock.goto(dock["something"])
 
-Running = True
-while Running:
-    pygame.display.update()
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            Running = False
-            pygame.quit()
+RUNNING:bool = True
+while RUNNING:
+
+    pg.display.update()
+
+    if pg.event.get(pg.QUIT):
+        RUNNING = False
+        pg.quit()
+
+
+
+
+

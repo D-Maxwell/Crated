@@ -2,6 +2,7 @@ from src.Ship import Crate
 from src.ext.Console import log
 from src.Ship.Node import Node
 from src.Ship.Crate import Crate
+from src.Ship.Dock import PrimitiveTags
 
 
 def swap(arg:list):
@@ -40,7 +41,8 @@ class Cargo(Node):
                 crate.pack(line)
 
 
-                crate.__class__ = globals()[crate.inherit()] if crate.inherit() != crate.__class__ else crate.__class__
+                # crate.__class__ = globals()[crate.inherit()] if crate.inherit() != crate.__class__ else crate.__class__
+                crate.__class__ = crate.inherit(PrimitiveTags)
                 crate.__init__()
 
                 prevLines = swap(lines[0:idx])

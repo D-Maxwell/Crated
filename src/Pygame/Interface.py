@@ -1,6 +1,6 @@
 import pygame
 from src.Ship.Dock import Dock
-
+from src.Ship.Tags.Rect import Rect
 
 
 def inscribe(arg, cont):
@@ -33,23 +33,35 @@ def rgba(arg):
 #print(rgba("2897D6"))
 
 class PygameDock(Dock):
+
     def __init__(self,id:str=None,data=None,children:list=None):
         super().__init__(id,data,children)
+
         self.surface = pygame.display.set_mode((1280,720),flags=pygame.RESIZABLE)
+
+
     def ship(self, *cargo):
         super().ship(*cargo)
+
         for cargo in self.children:
             cargo.surface = pygame.Surface(size=self.surface.get_size())
             for crate in cargo.freight:
                 #print(crate.PrimitiveTags.values())
                 #print(crate.tag)
-                if crate.tag == [] or crate.tag[0] in crate.PrimitiveTags["Rect"]:
-                    #print(crate.tag[0] in crate.PrimitiveTags.values())
-                    #print(crate.pos[0],crate.size)
-                    #print(int(0x00))
-                    #print(int(0x0 + int(crate.bg[0:2])))
-                    #print(crate.pos[0])
-                    pygame.draw.rect(cargo.surface,rgba(crate.bg),(crate.pos[0],crate.pos[1],crate.size[0],crate.size[1]))
+                # if crate.tag == [] or crate.tag[0] in crate.PrimitiveTags["Rect"]:
+                #print(crate.tag[0] in crate.PrimitiveTags.values())
+                #print(crate.pos[0],crate.size)
+                #print(int(0x00))
+                #print(int(0x0 + int(crate.bg[0:2])))
+                #print(crate.pos[0])
+                # print(crate.__class__)
+                if isinstance(crate, Rect):
+                    #print(crate,type(crate))
+                    pygame.draw.rect(cargo.surface, rgba(crate.bg), (
+                        *crate.pos,
+                        *crate.size,
+                    ))
+
 
     def goto(self, cargo):
         #print(cargo.id, cargo.surface)

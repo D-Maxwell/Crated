@@ -1,5 +1,5 @@
 from src.Ship.Node import Node
-#from src.Ship.Tags.Rect import Rect
+
 
 # Tags = {
 #     ['','rect'] : 'Rect',
@@ -22,10 +22,6 @@ class Crate(Node):
         super(Node, self).__init__()
         #super(Rect, self).__init__()
         #delattr(self,"data")
-
-        self.PrimitiveTags = {
-            "Rect" : ["rect","Rect",""] # tag will never contain an empty string, thus last element serves no purpose
-        }
 
         self.rank = 0
         self.parent = None
@@ -90,16 +86,27 @@ class Crate(Node):
 
         #print(keychars)
 
-    def inherit(self):
-        """Thanks to Socradeez#1059. Learning everyday.
-        I feel stupid this is so short and simple"""
+    def inherit(self, tags:{Node:['']}):
+        # """Thanks to Socradeez#1059. Learning everyday.
+        # I feel stupid this is so short and simple"""
         #Rect.__init__(self)
 
-        for i in self.PrimitiveTags:
-            if len(self.tag)==0 or self.tag[0] in self.PrimitiveTags[i]:
-                #print(globals())
-                return i
+        # for tag in self.PrimitiveTags:
+        #     if len(self.tag) == 0 or self.tag[0] in self.PrimitiveTags[tag]:
+        #         #print(globals())
+        #         return tag
         #print(self.__class__)
+
+        print(f"{self.tag=}")
+
+        if len(self.tag) == 0:
+            self.tag += [''] # add empty tag for below loop to run once and assign default tag type
+            # return self.__class__
+
+        for tag,aliases in tags.items():
+            if self.tag[0] in aliases: # I've allowed multiple tags for some reason
+                return tag
+
         return self.__class__
                 # print(i)
                 # print(globals())
@@ -138,3 +145,4 @@ class Crate(Node):
 
 # c = Crate()
 # c.hook("#main")
+
