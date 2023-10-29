@@ -1,18 +1,18 @@
 ```
 # MODERN IMPLEMENTATION
-ITERATION °3
+ITERATION °4
 
 
 ## Logs
 
 °1:
-	MultilineCommentSymbol : '\\\'
-	AttributeSeparator : '\t'
+	Multiline Comment Symbol : '\\\'
+	Attribute Separator : '\t'
 °2:
-	MultilineCommentSymbol : '```'
-	AttributeSeparator : ','
+	Multiline Comment Symbol : '```'
+	Attribute Separator : ','
 °3:
-	AttributeSeparator : ';'
+	Attribute Separator : ';'
 °4:
 	Scrapped Non Evaluated Values : 3/4
 

@@ -10,9 +10,9 @@ from ext.Console import log
 
 # Contains all pages
 dock = PygameDock("root","",[
-    # Cargo("index", "Freight/freight01.frg"),
-    # Cargo("something", "Freight/freight02.frg")
-    Cargo("modern", "Freight/modern_freight.frg"),
+	# Cargo("index", "Freight/freight01.frg"),
+	# Cargo("something", "Freight/freight02.frg")
+	Cargo("modern", "Freight/modern_freight.frg"),
 ])
 
 
@@ -92,8 +92,8 @@ dock = PygameDock("root","",[
 dock.ship()
 dock.goto("modern")
 for crate in dock[dock.selected_cargo].freight:
-    log(f"{crate.rank*'> '}{crate} {crate.attributes}",
-        type='INFO')
+	log(f"{crate.rank*'> '}{crate} {crate.attributes}",
+		type='INFO')
 
 
 
@@ -104,11 +104,11 @@ pg.init()
 RUNNING:bool = True
 while RUNNING:
 
-    pg.display.update()
+	pg.display.update()
 
-    if pg.event.get(pg.QUIT):
-        RUNNING = False
-        pg.quit()
+	if pg.event.get(pg.QUIT):
+		RUNNING = False
+		pg.quit()
 
 
 
