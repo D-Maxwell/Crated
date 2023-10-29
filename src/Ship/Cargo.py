@@ -30,9 +30,23 @@ class Cargo(Node):
             log(f"File at path '{self.data}' could not be found. Make sure to include the '.frg' suffix, and check the scope.",
                 type='ERROR')
         else:
+
+            isComment:bool = False
+
+            parent_indentation:int = 0
+            parent:[Crate] = []
+
             lines = file.read().splitlines()
-            for idx in range(len(lines)):
-                line = lines[idx]
+
+            for l,line in enumerate(lines):
+                line = line.expandtabs(1)
+
+                # if line == r"\\\ ".strip(): # raw string literals can't end in a backslash for some reason
+                if line == "```":
+                    isComment ^= True
+                    continue
+                if isComment or line == '': continue
+
 
                 crate = Crate()
 
@@ -45,21 +59,34 @@ class Cargo(Node):
                 crate.__class__ = crate.inherit(PrimitiveTags)
                 crate.__init__()
 
-                prevLines = swap(lines[0:idx])
-                print("idx",idx, "line",lines[idx], "prev",prevLines)
-                for subIdx in range(len(prevLines)):
-                    # print("prevLines:",prevLines)
-                    # print(self.freight)
-                    # print(prevLines[subIdx])
-                    # print(idx, subIdx)
-                    # print()
-                    #print("sub",subIdx)
-                    #if line.count("    ") == prevLines[subIdx].count("    ")+1:
-                    if prevLines[subIdx].count("    ") < line.count("    "):
-                        #print("frg",self.freight)
-                        crate.parent = self.freight[idx-subIdx-1]
-                        #print(crate.parent)
-                        break
+
+                if line.count(' ') < parent_indentation:
+                    parent.pop()
+
+                if len(parent) > 0:
+                    crate.parent = parent[-1]
+
+                if line.count(' ') >= parent_indentation:
+                    parent += [crate]
+
+                parent_indentation = line.count(' ')
+
+
+                # prevLines = swap(lines[0:l])
+                # # print("l",l, "line",lines[l], "prev",prevLines)
+                # for p,previous_line in enumerate(prevLines):
+                #     # print("prevLines:",prevLines)
+                #     # print(self.freight)
+                #     # print(prevLines[p])
+                #     # print(l, p)
+                #     # print()
+                #     #print("sub",p)
+                #     #if line.count("    ") == prevLines[p].count("    ")+1:
+                #     if previous_line.count("    ") < line.count("    "):
+                #         crate.parent = self.freight[l-p-1]
+                #         #print("frg",self.freight)
+                #         #print(crate.parent)
+                #         break
 
                 crate.pack(line)
 

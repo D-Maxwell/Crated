@@ -10,8 +10,9 @@ from ext.Console import log
 
 # Contains all pages
 dock = PygameDock("root","",[
-    Cargo("index", "Freight/freight01.frg"),
-    Cargo("something", "Freight/freight02.frg")
+    # Cargo("index", "Freight/freight01.frg"),
+    # Cargo("something", "Freight/freight02.frg")
+    Cargo("modern", "Freight/modern_freight.frg"),
 ])
 
 
@@ -29,7 +30,7 @@ dock = PygameDock("root","",[
 #
 #             tag = ""
 #             id = ""
-#             class_ = ""
+#             classes = ""
 #             data = {}
 #             children = []
 #
@@ -55,7 +56,7 @@ dock = PygameDock("root","",[
 #                     id = text[line][marker + 1 : idx]
 #
 #                 if text[line][marker] == '.' and text[line][idx] in ['#','.','(']:
-#                     class_ = text[line][marker + 1 : idx]
+#                     classes = text[line][marker + 1 : idx]
 #
 #                 if text[line][marker] in ['(',','] and text[line][idx] in [',',')']:
 #                     if marker_arg == 0: marker_arg = marker
@@ -75,8 +76,8 @@ dock = PygameDock("root","",[
 #                 #v# reached End of Line
 #
 #                 if idx == len(text[line])-1:
-#                     node.freight.append(Crate(tag,id,class_,pos=data.get("pos"),size=data.get("size"),children=children))
-#                     print("tag",tag,"id",id,"class",class_,"data",data)
+#                     node.freight.append(Crate(tag,id,classes,pos=data.get("pos"),size=data.get("size"),children=children))
+#                     print("tag",tag,"id",id,"class",classes,"data",data)
 #
 #     except FileNotFoundError:
 #         log(f"File at path '{node.data}' could not be found. Make sure to include the '.frg' suffix, and check the scope.",
@@ -89,8 +90,9 @@ dock = PygameDock("root","",[
 
 #ship(dock["index"])
 dock.ship()
-for crate in dock["something"].freight:
-    log(f"{crate.rank//4*'> '}{crate} {crate.attributes}",
+dock.goto("modern")
+for crate in dock[dock.selected_cargo].freight:
+    log(f"{crate.rank*'> '}{crate} {crate.attributes}",
         type='INFO')
 
 
@@ -98,8 +100,6 @@ for crate in dock["something"].freight:
 import pygame as pg
 
 pg.init()
-
-dock.goto(dock["something"])
 
 RUNNING:bool = True
 while RUNNING:

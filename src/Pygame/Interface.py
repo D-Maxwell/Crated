@@ -56,14 +56,22 @@ class PygameDock(Dock):
                 #print(crate.pos[0])
                 # print(crate.__class__)
                 if isinstance(crate, Rect):
-                    #print(crate,type(crate))
-                    pygame.draw.rect(cargo.surface, rgba(crate.bg), (
-                        *crate.pos,
-                        *crate.size,
-                    ))
+                    print(crate,type(crate))
+
+                    crate_surface = pygame.Surface(crate.size).convert_alpha()
+                    crate_surface.fill(rgba(crate.bg))
+
+                    cargo.surface.blit(crate_surface,crate.pos)
+
+                    # print(f"{rgba(crate.bg)=} {crate.bg=}")
+                    # pygame.draw.rect(cargo.surface, rgba(crate.bg), (
+                    #     *crate.pos,
+                    #     *crate.size,
+                    # ))
 
 
-    def goto(self, cargo):
+    def goto(self, cargo_id):
+        super().goto(cargo_id)
         #print(cargo.id, cargo.surface)
-        pygame.Surface.blit(self.surface, cargo.surface, [0,0])
+        pygame.Surface.blit(self.surface, self[self.selected_cargo].surface, [0,0])
 

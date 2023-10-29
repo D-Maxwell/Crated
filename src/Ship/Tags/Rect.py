@@ -1,4 +1,3 @@
-import json
 
 from src.Ship.Crate import Crate
 
@@ -12,12 +11,15 @@ class Rect(Crate):
 
     def pack(self, line):
         super().pack(line)
-        self.pos = json.loads(self.attributes.get("pos","[0,0]"))
-        #self.pos = self.attributes.get("pos",[0,0])
+
+        self.pos = self.attributes.get("pos",[0,0])
         self.position()
 
-        self.size = json.loads(self.attributes.get("size","[0,0]"))
+        self.size = self.attributes.get("size",[0,0])
+        self.resize()
+
         self.bg = self.attributes.get("bg","00000000")
+
 
     def position(self):
         mode = None
@@ -37,3 +39,15 @@ class Rect(Crate):
                         #self.pos[idx] += self.hook("#main")[0]
                         self.pos[idx] += self.parent.pos[idx]
                         #pass
+
+    def resize(self):
+
+        for s,size in enumerate(self.size):
+            if type(size) is float:
+                if self.parent is None:
+                    # last hack before going to bed
+                    print(self.cargo.dock.surface.get_size())
+                    self.size[s] = int(self.size[s] * self.cargo.dock.surface.get_size()[s])
+                    print(self.size[s])
+                else:
+                    self.size[s] = int(self.size[s] * self.parent.size[s])
