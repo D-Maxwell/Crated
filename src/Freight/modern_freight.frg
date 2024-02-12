@@ -18,5 +18,5 @@ ITERATION °4
 
 ```
 
-#main { [0.075,100]:size ; "FF00FF":bg }
-	.hello { [0,1]:origin ; [1.2,0.2]:size ; "00FFFF80":bg }
+#main { [0,0]:pos ; [0,0]:origin ; [0,0]:anchor ; [0.075,100]:dim ; "FF00FF":bg }
+	.hello { [0,-0.5]:pos ; [0,1]:origin ; [1.6,1.0]:dim ; "00FFFF80":bg }

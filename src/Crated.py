@@ -1,4 +1,4 @@
-from Pygame.Interface import PygameDock
+from Interface.Pygame import PygameDock
 from Ship.Cargo import Cargo
 from ext.Console import log
 
@@ -11,8 +11,8 @@ from ext.Console import log
 # Contains all pages
 dock = PygameDock("root","",[
 	# Cargo("index", "Freight/freight01.frg"),
-	# Cargo("something", "Freight/freight02.frg")
-	Cargo("modern", "Freight/modern_freight.frg"),
+	# Cargo("something", "Freight/freight02.frg"),
+	Cargo("MODERN", "Freight/modern_freight.frg"),
 ])
 
 
@@ -76,7 +76,7 @@ dock = PygameDock("root","",[
 #                 #v# reached End of Line
 #
 #                 if idx == len(text[line])-1:
-#                     node.freight.append(Crate(tag,id,classes,pos=data.get("pos"),size=data.get("size"),children=children))
+#                     node.freight.append(Crate(tag,id,classes,pos=data.get("pos"),dim=data.get("dim"),children=children))
 #                     print("tag",tag,"id",id,"class",classes,"data",data)
 #
 #     except FileNotFoundError:
@@ -90,9 +90,10 @@ dock = PygameDock("root","",[
 
 #ship(dock["index"])
 dock.ship()
-dock.goto("modern")
+dock.goto("MODERN")
 for crate in dock[dock.selected_cargo].freight:
-	log(f"{crate.rank*'> '}{crate} {crate.attributes}",
+	tab = '\t' # can't have shit in fstrings
+	log(f"{crate.rank*tab}{crate} {crate.attributes}",
 		type='INFO')
 
 
@@ -103,12 +104,22 @@ pg.init()
 
 RUNNING:bool = True
 while RUNNING:
-
-	pg.display.update()
-
-	if pg.event.get(pg.QUIT):
+	
+	try:
+		
+		
+		pg.display.update()
+		
+		
+		
+		if pg.event.get(pg.QUIT):
+			RUNNING = False
+		
+	except KeyboardInterrupt:
 		RUNNING = False
-		pg.quit()
+		
+	
+pg.quit()
 
 
 

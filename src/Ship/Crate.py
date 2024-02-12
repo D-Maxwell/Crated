@@ -1,6 +1,7 @@
 import json
 
-from src.Ship.Node import Node
+from ext.BetterBuiltins import Unpackable,IAttributable
+from Ship.Node import Node
 
 
 # Tags = {
@@ -11,27 +12,25 @@ from src.Ship.Node import Node
 #tag = Rect
 
 
-class Crate(Node):
+class Crate(Node, IAttributable):
 	"""
 	Node of type Crate.
 	Crates are made of an id, a class, arguments, and children.
 	These may all be individually omitted.
 	"""
-
+	
+	attributes:dict = Unpackable({
+		'rank' : 0,
+		'parent' : None,
+		('tag', 'id', 'classes') : [],
+	})
+	
+	
 	def __init__(self):
-
-		#super().__init__([tag,id,classes],attributes,children)
-		super(Node, self).__init__()
-		#super(Rect, self).__init__()
-		#delattr(self,"data")
-
-		self.rank = 0
-		self.parent = None
-		self.tag = []
-		self.id = []
-		self.classes = []
-		self.attributes = {}
-		#self.children = []
+		
+		super().__init__()
+		IAttributable.__init__(self, self.attributes)
+		
 
 	def __repr__(self):
 		return "".join([
@@ -51,13 +50,13 @@ class Crate(Node):
 		# line is already expanded
 
 		#self.rank = line.count(" ") # the rank of a crate is determined by the amount of trailing spaces that precede it.
-		self.rank = len(line) - len(line.lstrip())
+		# self.rank = len(line) - len(line.lstrip())
 		#print(f"{self.rank=} {line=} {len(line)=} {line.lstrip()} {len(line.lstrip())}")
-
-		self.tag = [] # multiple tags are allowed for some reason
-		self.id = [] # multiple ids too ... ?
-		self.classes = [] # class_ ew
-		self.attributes = {}
+		
+		# self.tag = [] # multiple tags are allowed for some reason
+		# self.id = [] # multiple ids too ... ?
+		# self.classes = [] # class_ ew
+		# self.attributes = {}
 
 		#if self.id is None: self.id = []
 		#if self.classes is None: self.classes = []
@@ -114,6 +113,9 @@ class Crate(Node):
 
 		# print(sections)
 		# print(self.rank)
+		
+		
+		IAttributable.__init__(self, self.attributes) # update fields from file
 
 
 		def old():

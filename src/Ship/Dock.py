@@ -1,8 +1,8 @@
-from src.Ship.Node import Node
+from Ship.Node import Node
 
 
 
-from src.Ship.Tags.Rect import Rect
+from Ship.Tags.Rect import Rect
 
 PrimitiveTags = {
 	Rect : ["rect","Rect",""] # tag will never contain an empty string, thus last element serves no purpose

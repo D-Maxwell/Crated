@@ -1,3 +1,6 @@
+import os     # hacky workaround,
+os.system('') # may fix escape sequences being ignored in some older NT versions
+
 
 logTypes = {
 	'ERROR' : [255,0,0],
@@ -15,17 +18,18 @@ def log(*args, type:str=None, clr:list=None, bg:list=None):
 	:param args: Any amount of strings
 	:return: Dual color console line
 	"""
-	strings:str = ""
-	for i in range(len(args)):
-		strings += args[i]
+	
 	output = ""
-	if bg is not None: output += f"\033[48:2:{bg[0]}:{bg[1]}:{bg[2]}m"
-	if type is not None: output += f"\033[38:2:{logTypes[type][0]}:{logTypes[type][1]}:{logTypes[type][2]}m" + f"[{type}] "
+	
+	if bg is not None: output += f"\033[48;2;{';'.join(map(str,bg))}m"
+	if type is not None: output += f"\033[38;2;{';'.join(map(str,logTypes[type]))}m" + f"[{type}] "
+	
 	output += f"\033[0m"
-	if bg is not None: output += f"\033[48:2:{bg[0]}:{bg[1]}:{bg[2]}m"
-	if clr is not None: output += f"\033[38:2:{clr[0]}:{clr[1]}:{clr[2]}m"
-
-	output += strings
+	
+	if bg is not None: output += f"\033[48;2;{';'.join(map(str,bg))}m"
+	if clr is not None: output += f"\033[38;2;{';'.join(map(str,clr))}m"
+	
+	output += "".join(map(str,args))
 	print(output, sep='')
 
 

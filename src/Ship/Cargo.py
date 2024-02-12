@@ -1,8 +1,8 @@
-from src.Ship import Crate
-from src.ext.Console import log
-from src.Ship.Node import Node
-from src.Ship.Crate import Crate
-from src.Ship.Dock import PrimitiveTags
+from Ship import Crate
+from ext.Console import log
+from Ship.Node import Node
+from Ship.Crate import Crate
+from Ship.Dock import PrimitiveTags
 
 
 def swap(arg:list):
@@ -22,7 +22,13 @@ class Cargo(Node):
 	def __init__(self, id:str=None, path=None, children:list=None):
 		super().__init__(id,path,children)
 		self.freight = []
-
+		self.dim = [1280,720]
+	
+	
+	def __repr__(self):
+		return f"#{self.id}"
+	
+	
 	def load(self):
 		try:
 			file = open(self.data)
@@ -34,12 +40,12 @@ class Cargo(Node):
 			isComment:bool = False
 
 			parent_indentation:int = 0
-			parent:[Crate] = []
+			parent:[Crate] = [self]
 
-			lines = file.read().splitlines()
+			lines:[''] = file.read().splitlines()
 
 			for l,line in enumerate(lines):
-				line = line.expandtabs(1)
+				line:str = line.expandtabs(1)
 
 				# if line == r"\\\ ".strip(): # raw string literals can't end in a backslash for some reason
 				if line == "```":
@@ -52,7 +58,7 @@ class Cargo(Node):
 
 
 				crate.cargo = self
-				crate.pack(line)
+				# crate.pack(line)
 
 
 				# crate.__class__ = globals()[crate.inherit()] if crate.inherit() != crate.__class__ else crate.__class__
@@ -69,8 +75,8 @@ class Cargo(Node):
 				if line.count(' ') >= parent_indentation:
 					parent += [crate]
 
-				parent_indentation = line.count(' ')
-
+				parent_indentation = len(line) - len(line.lstrip())
+				
 
 				# prevLines = swap(lines[0:l])
 				# # print("l",l, "line",lines[l], "prev",prevLines)
