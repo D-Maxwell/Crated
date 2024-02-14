@@ -1,16 +1,10 @@
-from Ship import Crate
 from ext.Console import log
+from ext.BetterBuiltins import Array
+
 from Ship.Node import Node
 from Ship.Crate import Crate
 from Ship.Dock import PrimitiveTags
 
-
-def swap(arg:list):
-	out = []
-	for idx in range(len(arg)):
-		e = arg[idx]
-		out.append(arg[-1 - idx])
-	return out
 
 
 class Cargo(Node):
@@ -18,11 +12,11 @@ class Cargo(Node):
 	Node of type Cargo.
 	Point to a freight file through their path arg.
 	"""
-
+	
 	def __init__(self, id:str=None, path=None, children:list=None):
 		super().__init__(id,path,children)
 		self.freight = []
-		self.dim = [1280,720]
+		self.dim = Array([1280,720])
 	
 	
 	def __repr__(self):
@@ -36,12 +30,12 @@ class Cargo(Node):
 			log(f"File at path '{self.data}' could not be found. Make sure to include the '.frg' suffix, and check the scope.",
 				type='ERROR')
 		else:
-
+			
 			isComment:bool = False
-
+			
 			parent_indentation:int = 0
 			parent:[Crate] = [self]
-
+			
 			lines:[''] = file.read().splitlines()
 
 			for l,line in enumerate(lines):

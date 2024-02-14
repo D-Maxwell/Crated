@@ -1,15 +1,10 @@
 import json
+import re
 
-from ext.BetterBuiltins import Unpackable,IAttributable
+from ext.BetterBuiltins import Unpackable, IAttributable, Array
 from Ship.Node import Node
 
 
-# Tags = {
-#     ['','rect'] : 'Rect',
-#     ['txt','text'] : 'Text'
-# }
-
-#tag = Rect
 
 
 class Crate(Node, IAttributable):
@@ -29,128 +24,181 @@ class Crate(Node, IAttributable):
 	def __init__(self):
 		
 		super().__init__()
-		IAttributable.__init__(self, self.attributes)
+		IAttributable.__init__(self, Crate.attributes)
+		# print(f"{self.id=} {self.attributes=}")
 		
-
+	
 	def __repr__(self):
 		return "".join([
 			",".join(self.tag),
 			'#'*(len(self.id)>0) + '#'.join(self.id),
 			'.'*(len(self.classes)>0) + '.'.join(self.classes),
 		])
-		# output = ""
-		# for tag in self.tag: output += tag + (',' if len(self.tag) > 1 else '')
-		# for id in self.id: output += '#' + id
-		# for class_ in self.classes: output += '.' + class_
-		# return output
-		#return f"{self.tag}{'#' if self.id != (None or '') else ''}{self.id}{'.' if self.classes != (None or '') else ''}{self.classes}"
-
-
+	
+	
 	def pack(self, line:str):
-		# line is already expanded
-
-		#self.rank = line.count(" ") # the rank of a crate is determined by the amount of trailing spaces that precede it.
-		# self.rank = len(line) - len(line.lstrip())
-		#print(f"{self.rank=} {line=} {len(line)=} {line.lstrip()} {len(line.lstrip())}")
 		
-		# self.tag = [] # multiple tags are allowed for some reason
-		# self.id = [] # multiple ids too ... ?
-		# self.classes = [] # class_ ew
-		# self.attributes = {}
-
-		#if self.id is None: self.id = []
-		#if self.classes is None: self.classes = []
-
-		sections:[""] = line.strip()[:-1].split('{', 1)
-		sections = {["selector","attributes"][s] : section.strip() for s,section in enumerate(sections)}
-
-		# this will defo get rewritten given how awful it is
-		def multisplit(string:"", chars:[''], include_char:bool=False):
-			# string.split(chars[0])
-			# string.split(chars[1])
-
-			out:dict = {char:[] for char in chars}
-
-			c:int = 0
-			for char in string:
-
-				if c == len(string) - 1:
-					c += 1
-
-				if char in chars or c == len(string):
-					if c == 0:
-						# out[chars[0]] += ['']
-						c += 1
-						continue
-
-					out[string[0]] += [string[1-include_char : c]]
-					string = string[c:]
-					c = 0
-
-				c += 1
-
-			return out
-
-		# print(multisplit(
-		#     "ab#main.hello#id#moreid.abc",
-		#     ['#','.'],
-		#     True,
-		# ))
-
-
-		sections["selector"] = multisplit(sections["selector"], [',','#','.'])
-		self.tag, self.id, self.classes = sections["selector"].values()
-		#print(f"{self.tag=}, {self.id=}, {self.classes=}")
-
-		sections["attributes"] = list(map(
-			lambda attribute: attribute.strip().rsplit(':', -1),
-			sections["attributes"].split(';')
-		))
-		sections["attributes"] = {field : json.loads(value) for value,field in sections["attributes"]}
-		self.attributes = sections["attributes"]
-
-		# sections["attributes"] = [section.strip() for section in sections["attributes"].split(';')]
-
-		# print(sections)
-		# print(self.rank)
+		# closing '}' is useless, spec needs revisions
+		line = line.strip()[ : -1]
+		
+		selector, properties = line.split('{')
+		
+		# bad dobby bad
+		#self.id = []
+		# why the hell is self.id getting reset
+		
+		# WHYYYYY IS THIS NEEDED ???!
+		self.id = []
+		self.classes = []
+		self.tag = []
+		self.attributes = {} # this is so stupid what have I done
+		# now it works and I don't know why
 		
 		
-		IAttributable.__init__(self, self.attributes) # update fields from file
+		for salt in re.findall(r'((?:#|\.|^).*?)(?=\W|$)', selector):
+			if salt[0]=='#': self.id += [salt[1 : ]]
+			elif salt[0]=='.': self.classes += [salt[1 : ]]
+			else: self.tag += [salt]
+			
+		for prop in properties.split(';'):
+			value, name = prop.strip().split(':')
+			evaluated = eval(value)
+			self.attributes[name] = Array(evaluated) if type(evaluated) is list else evaluated
+			
+		
+		IAttributable.__init__(self, self.attributes)
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	# def pack(self, line:str):
+	# 	# line is already expanded
+	
+	# 	#self.rank = line.count(" ") # the rank of a crate is determined by the amount of trailing spaces that precede it.
+	# 	# self.rank = len(line) - len(line.lstrip())
+	# 	#print(f"{self.rank=} {line=} {len(line)=} {line.lstrip()} {len(line.lstrip())}")
+		
+	# 	# self.tag = [] # multiple tags are allowed for some reason
+	# 	# self.id = [] # multiple ids too ... ?
+	# 	# self.classes = [] # class_ ew
+	# 	# self.attributes = {}
+
+	# 	#if self.id is None: self.id = []
+	# 	#if self.classes is None: self.classes = []
+
+	# 	sections:[""] = line.strip()[:-1].split('{', 1)
+	# 	sections = {["selector","attributes"][s] : section.strip() for s,section in enumerate(sections)}
+
+	# 	# this will defo get rewritten given how awful it is
+	# 	def multisplit(string:"", chars:[''], include_char:bool=False):
+	# 		# string.split(chars[0])
+	# 		# string.split(chars[1])
+
+	# 		out:dict = {char:[] for char in chars}
+
+	# 		c:int = 0
+	# 		for char in string:
+
+	# 			if c == len(string) - 1:
+	# 				c += 1
+
+	# 			if char in chars or c == len(string):
+	# 				if c == 0:
+	# 					# out[chars[0]] += ['']
+	# 					c += 1
+	# 					continue
+
+	# 				out[string[0]] += [string[1-include_char : c]]
+	# 				string = string[c:]
+	# 				c = 0
+
+	# 			c += 1
+
+	# 		return out
+
+	# 	# print(multisplit(
+	# 	#     "ab#main.hello#id#moreid.abc",
+	# 	#     ['#','.'],
+	# 	#     True,
+	# 	# ))
 
 
-		def old():
-			keychars = []
-			rank = self.rank
+	# 	sections["selector"] = multisplit(sections["selector"], [',','#','.'])
+	# 	self.tag, self.id, self.classes = sections["selector"].values()
+	# 	#print(f"{self.tag=}, {self.id=}, {self.classes=}")
 
-			for idx in range(len(line)):
-				# keychar found or BoL or arg
-				if line[idx] in ['#','.','(',')'] or idx == rank or (line[idx] == ',' and line[:idx].count("[") == line[:idx].count("]")):
-					keychars.append([idx, line[idx]])
+	# 	sections["attributes"] = list(map(
+	# 		lambda attribute: attribute.strip().rsplit(':', -1),
+	# 		sections["attributes"].split(';')
+	# 	))
+	# 	sections["attributes"] = {field : json.loads(value) for value,field in sections["attributes"]}
+	# 	self.attributes = sections["attributes"]
 
-			for idx in range(len(keychars)):
-				#if idx != len(keychars)-1: print(line[keychars[idx][0] : keychars[idx+1][0]])
-				if keychars[idx][0] == rank and keychars[idx][1] not in ['#','.','(']: self.tag.append(line[keychars[idx][0] : keychars[idx+1][0]])
-				if keychars[idx][1] == '#': self.id.append(line[keychars[idx][0]+1 : keychars[idx+1][0]])
-				if keychars[idx][1] == '.': self.classes.append(line[keychars[idx][0] + 1: keychars[idx + 1][0]])
+	# 	# sections["attributes"] = [section.strip() for section in sections["attributes"].split(';')]
 
-				if keychars[idx][1] in ['(',',']:
-					hasArgs = False
-					for i in keychars:
-						if i[1] == ',':
-							hasArgs = True
-					if hasArgs:
-						#self.attributes[line[keychars[idx][0] : str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=")]] = line[str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=") : keychars[idx+1][0]]
-						equal = keychars[idx][0] + str(line[keychars[idx][0] : keychars[idx+1][0]]).find('=')
-						self.attributes[line[keychars[idx][0]+1 : equal]] = line[equal+1 : keychars[idx+1][0]]
-					# out = []
-					# key = line[keychars[idx][0]+1 : equal]
-					# for subIdx in range(len(self.attributes[key])):
-					#     if self.attributes[key][subIdx] == '[':
-					#         out.append([])
-						# elif self.attributes[key][subIdx] in ["'",'"']:
-						#     marker = subIdx
-						#     while self.attributes[key][subIdx] not in ["'",'"'] and marker != subIdx:
-		# old()
+	# 	# print(sections)
+	# 	# print(self.rank)
+		
+		
+	# 	IAttributable.__init__(self, self.attributes) # update fields from file
+
+
+	# 	def old():
+	# 		keychars = []
+	# 		rank = self.rank
+
+	# 		for idx in range(len(line)):
+	# 			# keychar found or BoL or arg
+	# 			if line[idx] in ['#','.','(',')'] or idx == rank or (line[idx] == ',' and line[:idx].count("[") == line[:idx].count("]")):
+	# 				keychars.append([idx, line[idx]])
+
+	# 		for idx in range(len(keychars)):
+	# 			#if idx != len(keychars)-1: print(line[keychars[idx][0] : keychars[idx+1][0]])
+	# 			if keychars[idx][0] == rank and keychars[idx][1] not in ['#','.','(']: self.tag.append(line[keychars[idx][0] : keychars[idx+1][0]])
+	# 			if keychars[idx][1] == '#': self.id.append(line[keychars[idx][0]+1 : keychars[idx+1][0]])
+	# 			if keychars[idx][1] == '.': self.classes.append(line[keychars[idx][0] + 1: keychars[idx + 1][0]])
+
+	# 			if keychars[idx][1] in ['(',',']:
+	# 				hasArgs = False
+	# 				for i in keychars:
+	# 					if i[1] == ',':
+	# 						hasArgs = True
+	# 				if hasArgs:
+	# 					#self.attributes[line[keychars[idx][0] : str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=")]] = line[str(line[keychars[idx][0] : keychars[idx+1][0]]).find("=") : keychars[idx+1][0]]
+	# 					equal = keychars[idx][0] + str(line[keychars[idx][0] : keychars[idx+1][0]]).find('=')
+	# 					self.attributes[line[keychars[idx][0]+1 : equal]] = line[equal+1 : keychars[idx+1][0]]
+	# 				# out = []
+	# 				# key = line[keychars[idx][0]+1 : equal]
+	# 				# for subIdx in range(len(self.attributes[key])):
+	# 				#     if self.attributes[key][subIdx] == '[':
+	# 				#         out.append([])
+	# 					# elif self.attributes[key][subIdx] in ["'",'"']:
+	# 					#     marker = subIdx
+	# 					#     while self.attributes[key][subIdx] not in ["'",'"'] and marker != subIdx:
+	# 	# old()
 
 
 

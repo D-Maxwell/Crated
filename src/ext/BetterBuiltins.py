@@ -36,12 +36,25 @@ class Array(list):
 			values = values[0]
 		super().__init__(values)
 		
-	for dunder,oper in {
-		'add':'+',
-		'sub':'-',
-		'mul':'*',
-		'div':'/',
-	}.items():
-		exec(f"def __{dunder}__(self, other): return [s {oper} o for s,o in zip(self,other if hasattr(other, '__iter__') else [other]*len(self))]")
+	for dunder in {
+		'add',
+		'sub',
+		'mul',
+		'truediv',
+		'floordiv',
+		'round',
+		'neg',
+	}:
+		exec("\n".join([
+		f"def __{dunder}__(self, other=None):"
+		f"	return Array(["
+		f"		s.__{dunder}__(o) if o is not None else s.__{dunder}__()"
+		f"		for s,o in zip(self, other if hasattr(other, '__iter__') else [other]*len(self) )"
+		f"	])"
+		]))
+		
+		if dunder in {'add','mul'}:
+			exec(f"def __i{dunder}__(self, value): return self.__{dunder}__(value)")
+		
 		
 

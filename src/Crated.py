@@ -13,6 +13,7 @@ dock = PygameDock("root","",[
 	# Cargo("index", "Freight/freight01.frg"),
 	# Cargo("something", "Freight/freight02.frg"),
 	Cargo("MODERN", "Freight/modern_freight.frg"),
+	Cargo("TODO", "Freight/todo.frg"),
 ])
 
 
@@ -90,7 +91,7 @@ dock = PygameDock("root","",[
 
 #ship(dock["index"])
 dock.ship()
-dock.goto("MODERN")
+dock.goto("TODO")
 for crate in dock[dock.selected_cargo].freight:
 	tab = '\t' # can't have shit in fstrings
 	log(f"{crate.rank*tab}{crate} {crate.attributes}",
