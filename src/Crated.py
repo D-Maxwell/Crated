@@ -1,5 +1,5 @@
-from Interface.Pygame import PygameDock
-from Ship.Cargo import Cargo
+from interface.Pygame import PygameDock
+from ship.Cargo import Cargo
 from ext.Console import log
 
 # def hook(self, path:str):
@@ -12,13 +12,13 @@ from ext.Console import log
 dock = PygameDock("root","",[
 	# Cargo("index", "Freight/freight01.frg"),
 	# Cargo("something", "Freight/freight02.frg"),
-	Cargo("MODERN", "Freight/modern_freight.frg"),
-	Cargo("TODO", "Freight/todo.frg"),
+	Cargo("MODERN", "freight/modern_freight.frg"),
+	Cargo("TODO", "freight/todo.frg"),
 ])
 
 
 
-# def ship(node:Cargo):
+# def embark(node:Cargo):
 #
 #     #cargo = []
 #     keychars = ['#','.','']
@@ -90,8 +90,8 @@ dock = PygameDock("root","",[
 
 
 #ship(dock["index"])
-dock.ship()
-dock.goto("TODO")
+dock.embark()
+dock.goto('TODO')
 for crate in dock[dock.selected_cargo].freight:
 	tab = '\t' # can't have shit in fstrings
 	log(f"{crate.rank*tab}{crate} {crate.attributes}",
@@ -99,6 +99,8 @@ for crate in dock[dock.selected_cargo].freight:
 
 
 
+# TODO: move mainloop to pygame interface probably or have a single call that maps to whichever interface is used
+# might wanna rename interface directory to renderer ?
 import pygame as pg
 
 pg.init()
@@ -108,6 +110,10 @@ while RUNNING:
 	
 	try:
 		
+		# if pg.event.get(pg.VIDEORESIZE):
+		# 	dock.embark()
+		
+		dock.sail()
 		
 		pg.display.update()
 		

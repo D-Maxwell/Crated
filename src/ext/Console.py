@@ -2,6 +2,12 @@ import os     # hacky workaround,
 os.system('') # may fix escape sequences being ignored in some older NT versions
 
 
+## TODO : rewrite this as a class where each Log call (!=log) is stored within the class (upon calling the constructor several times, acts as dedicated method as well)
+## 		  would store logTypes as well, perhaps as constants (class could also be an Enum perhaps ?)
+## 		  this would allow for bulk printing --potentially more efficient--, data logging to disk (easier at the very least), and dynamic tty refresh ('\r' shenanigans)
+
+
+
 logTypes = {
 	'ERROR' : [255,0,0],
 	'WARN' : [255,165,0],

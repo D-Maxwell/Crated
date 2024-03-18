@@ -2,8 +2,10 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 import pygame
 
-from Ship.Dock import Dock
-from Ship.Tags.Rect import Rect
+from ext.BetterBuiltins import Array
+
+from ship.Dock import Dock
+from ship.containers.Rect import Rect
 
 
 def inscribe(arg, cont):
@@ -25,9 +27,9 @@ def rgba(arg):
 #print(rgba("2897D6"))
 
 
-class PygameDock(Dock):
+class PygameDock(Dock): # TODO : extend pygame.display ?
 	
-	def __init__(self,id:str=None,data=None,children:list=None):
+	def __init__(self, id:str=None ,data=None ,children:list=None):
 		super().__init__(id,data,children)
 		
 		pygame.display.set_caption(self[self.selected_cargo].id)
@@ -35,25 +37,49 @@ class PygameDock(Dock):
 		self.surface = pygame.display.set_mode(self[self.selected_cargo].dim,flags=pygame.RESIZABLE)#|pygame.NOFRAME)
 	
 	
-	def ship(self, *cargo):
-		super().ship(*cargo)
+	def embark(self, *cargo):
+		super().embark(*cargo)
 		
 		for cargo in self.children:
-			cargo.surface = pygame.Surface(size=self.surface.get_size())
+			# cargo.sail()
+			cargo.dim = Array(self.surface.get_size())
+			cargo.surface = pygame.Surface(size=cargo.dim)
+			
 			for crate in cargo.freight:
+				crate.sail()
+				crate.surface = pygame.Surface(crate.dim).convert_alpha()
+			
+		
+		self.sail()
+		
+	
+	def sail(self):
+		
+		cargo = self[self.selected_cargo]
+		cargo.dim = Array(self.surface.get_size())
+		# cargo.sail()
+		
+		for crate in cargo.freight:
+			
+			if hasattr(crate, 'surface'):
+				crate.surface = pygame.Surface(size=crate.outerDim())
+			
+			# if hasattr(crate, 'sail'):
+			crate.sail()
 				
-				if isinstance(crate, Rect):
-					
-					crate_surface = pygame.Surface(crate.dim).convert_alpha()
-					crate_surface.fill(rgba(crate.bg))
-					
-					cargo.surface.blit(crate_surface,crate.pos)
-					
-
-
+			# if isinstance(crate, (source_container:=Rect)):
+			if hasattr(crate, 'surface'):
+				
+				crate.surface.fill(rgba(crate.bg))
+				
+				cargo.surface.blit(crate.surface,crate.outerPos())
+				
+				
+		self.surface.blit(self[self.selected_cargo].surface, [0,0])
+	
+	
 	def goto(self, cargo_id):
 		super().goto(cargo_id)
 		pygame.display.set_caption(self[self.selected_cargo].id)
 		#print(cargo.id, cargo.surface)
-		pygame.Surface.blit(self.surface, self[self.selected_cargo].surface, [0,0])
 
