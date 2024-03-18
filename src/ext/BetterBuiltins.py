@@ -22,8 +22,10 @@ class Unpackable(dict):
 			if type(key) is tuple:
 				
 				for k in key:
+					print(k,value)
+					# print(id(value),id(eval(f"{value}"))) # OH FFS FINALLY I GOT IT
 					# avoid any pointer linkages, fresh instances only
-					self[k] = eval("value")
+					self[k] = type(value)(value)
 				
 				self.pop(key)
 			
