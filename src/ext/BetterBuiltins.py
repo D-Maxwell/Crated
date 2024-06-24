@@ -22,7 +22,7 @@ class Unpackable(dict):
 			if type(key) is tuple:
 				
 				for k in key:
-					print(k,value)
+					# print(k,value)
 					# print(id(value),id(eval(f"{value}"))) # OH FFS FINALLY I GOT IT
 					# avoid any pointer linkages, fresh instances only
 					self[k] = type(value)(value)
@@ -59,4 +59,23 @@ class Array(list):
 			exec(f"def __i{dunder}__(self, value): return self.__{dunder}__(value)")
 		
 		
+	
+	# python has no overloading nor the ability to declare static methods separately from instance methods
+	# ergo no A[e_1,e_2,...,e_n] for me
+	# @classmethod
+	# def __getitem__(cls, instance):
+	# 	return cls.__init__(instance)
+	
+	
+
+# unless
+class _ArrayShorthand:
+	def __getitem__(self, value):
+		return Array(value)
+
+global A
+A = _ArrayShorthand()
+
+
+
 

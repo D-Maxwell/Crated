@@ -47,7 +47,7 @@ class Cargo(Node):
 				
 				line:str = line.lstrip('\t')
 				indentation:int = len(lines[l]) - len(line)
-				print(f"{indentation=} {parent_indentation=}")
+				# print(f"{indentation=} {parent_indentation=}")
 				
 				
 				
@@ -71,7 +71,7 @@ class Cargo(Node):
 				
 				if len(parent) > 0:
 					crate.attributes['parent'] = parent[-1]
-					print(f"{crate.parent=} {parent=}")
+					# print(f"{crate.parent=} {parent=}")
 				
 				crate.pack(line)
 				

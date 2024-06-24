@@ -19,7 +19,12 @@ class Crate(Node, IAttributable):
 	# but truly a conveniance as for defaults to remain accessible.
 	
 	
-	def __init__(self):
+	def __init__(self, **kwargs):
+		
+		self.rank = kwargs.get('rank', 0)
+		self.parent = kwargs.get('parent', 0)
+		self.tag = kwargs.get('tag', 0)
+		self.id = kwargs.get('id', 0)
 		
 		self.attributes:dict = Unpackable({
 			'rank' : 0,
@@ -43,9 +48,9 @@ class Crate(Node, IAttributable):
 	
 	def pack(self, line:str):
 		
-		print()
-		print(f"{self=} {self.attributes=}")
-		print()
+		# print()
+		# print(f"{self=} {self.attributes=}")
+		# print()
 		
 		# closing '}' is useless, spec needs revisions
 		# line = line.strip()[ : -1]
@@ -67,7 +72,7 @@ class Crate(Node, IAttributable):
 		# now it works and I don't know why
 		
 		for salt in re.findall(r'((?:#|\.|^).*?)(?=\W|$)', selector):
-			print(f"{salt=}")
+			# print(f"{salt=}")
 			if salt[0]=='#': self.id += [salt[1 : ]]
 			elif salt[0]=='.': self.classes += [salt[1 : ]]
 			else: self.tag = salt
@@ -83,7 +88,7 @@ class Crate(Node, IAttributable):
 			
 			try:
 				exec(f"from ship.containers.{tag} import {tag}")
-				print(f"{tag=}")
+				# print(f"{tag=}")
 				return eval(tag)
 			except:
 				log(f'Non Existent or Unloaded Container "{tag}"',
@@ -93,20 +98,20 @@ class Crate(Node, IAttributable):
 		
 		self.__class__ = inherit(self.tag, [])
 		self.__init__()
-		print(f"{self.attributes.get('pos')=}")
+		# print(f"{self.attributes.get('pos')=}")
 		
 		for prop in properties.split('\t'):
 			value, name = prop.strip().split(':')
 			evaluated = eval(value)
 			self.attributes[name] = Array(evaluated) if type(evaluated) is list else evaluated
 			
-		print()
+		# print()
 		
-		print(f"{self=} {self.attributes=}")
+		# print(f"{self=} {self.attributes=}")
 		
 		IAttributable.__init__(self, self.attributes)
 		
-		print(f"{self=} {self.attributes=}")
+		# print(f"{self=} {self.attributes=}")
 		
 		
 	def sail(self): pass

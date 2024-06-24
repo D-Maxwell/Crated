@@ -1,5 +1,5 @@
 
-from ext.BetterBuiltins import Unpackable, IAttributable, Array
+from ext.BetterBuiltins import Unpackable, IAttributable, Array, A
 from ship.Crate import Crate
 
 
@@ -15,16 +15,16 @@ class Rect(Crate, IAttributable):
 	def __init__(self):
 		
 		self.attributes:dict = self.attributes | Unpackable({
-			('pos','dim'): Array([0]*2),
+			('pos','dim'): A[0,0],
 			
-			('origin','anchor'): Array([-1]*2),
+			('origin','anchor'): A[-1,-1],
 			
 			'bg': [0]*3,
 		})
 		
 		# super().__init__()
 		IAttributable.__init__(self, self.attributes)
-		print(f"{self.attributes['pos']=}")
+		# print(f"{self.attributes['pos']=}")
 		
 	
 	# def pack(self, line):

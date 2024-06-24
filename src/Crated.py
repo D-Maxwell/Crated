@@ -112,6 +112,8 @@ pg.init()
 # win32gui.SetLayeredWindowAttributes(pg.display.get_wm_info()['window'], win32api.RGB(*[0,0,0]), 0, win32con.LWA_COLORKEY)
 
 
+
+
 RUNNING:bool = True
 while RUNNING:
 	

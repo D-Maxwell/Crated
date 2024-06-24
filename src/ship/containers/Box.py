@@ -1,13 +1,13 @@
 
 from ship.containers.Rect import Rect
-from ext.BetterBuiltins import Unpackable, IAttributable, Array
+from ext.BetterBuiltins import Unpackable, IAttributable, A
 
 
 class Box(Rect):
 	
 	attributes = Unpackable({
-		('padding','paddout') : Array([0]*2),
-		'direction' : Array([1]*2),
+		('padding','paddout') : A[0,0],
+		'direction' : A[1,1],
 		'primaryAxis' : 0, # Enum Axis.X
 	})
 	

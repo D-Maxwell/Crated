@@ -2,7 +2,7 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 import pygame
 
-from ext.BetterBuiltins import Array
+from ext.BetterBuiltins import Array, A
 
 from ship.Dock import Dock
 from ship.containers.Rect import Rect
@@ -42,12 +42,12 @@ class PygameDock(Dock): # TODO : extend pygame.display ?
 		
 		for cargo in self.children:
 			# cargo.sail()
-			cargo.dim = Array(self.surface.get_size())
+			cargo.dim = A[self.surface.get_size()]
 			cargo.surface = pygame.Surface(size=cargo.dim)
 			
 			for crate in cargo.freight:
-				crate.sail()
 				crate.surface = pygame.Surface(crate.dim).convert_alpha()
+				crate.sail()
 			
 		
 		self.sail()
@@ -56,13 +56,13 @@ class PygameDock(Dock): # TODO : extend pygame.display ?
 	def sail(self):
 		
 		cargo = self[self.selected_cargo]
-		cargo.dim = Array(self.surface.get_size())
+		cargo.dim = A[self.surface.get_size()]
 		# cargo.sail()
 		
 		for crate in cargo.freight:
 			
 			if hasattr(crate, 'surface'):
-				crate.surface = pygame.Surface(size=crate.outerDim())
+				crate.surface = pygame.Surface(size=crate.outerDim()).convert_alpha()
 			
 			# if hasattr(crate, 'sail'):
 			crate.sail()
@@ -72,7 +72,13 @@ class PygameDock(Dock): # TODO : extend pygame.display ?
 				
 				crate.surface.fill(rgba(crate.bg))
 				
-				cargo.surface.blit(crate.surface,crate.outerPos())
+				cargo.surface.blit(
+					crate.surface,
+					# can't have +x+y if individual surfaces are +x-y
+					# TODO : surface wrapper, module independant (imagemagick)
+					# Array(0,cargo.dim[1]) + (Array(1,-1) * crate.outerPos())
+					crate.outerPos()
+				)
 				
 				
 		self.surface.blit(self[self.selected_cargo].surface, [0,0])
