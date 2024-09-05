@@ -10,25 +10,23 @@ class Rect(Crate, IAttributable):
 	and so will any children thereof.
 	"""
 	
+	attributes:dict = Unpackable({
+		('pos','dim'): A[0,0],
+		
+		('origin','anchor'): A[-1,-1],
+		
+		'bg': [0]*3,
+	})
 	
 	
-	def __init__(self):
+	def __init__(self, **kwargs):
 		
-		self.attributes:dict = self.attributes | Unpackable({
-			('pos','dim'): A[0,0],
-			
-			('origin','anchor'): A[-1,-1],
-			
-			'bg': [0]*3,
-		})
+		# self.attributes:dict = {}
 		
-		# super().__init__()
-		IAttributable.__init__(self, self.attributes)
-		# print(f"{self.attributes['pos']=}")
+		## TODO : automagically reference topmost class
+		IAttributable.__init__(self, Rect.attributes)
+		super().__init__(**kwargs)
 		
-	
-	# def pack(self, line):
-	# 	super().pack(line)
 	
 	def sail(self):
 		# TODO : should anchor == origin unless explictly declared otherwise ?
@@ -37,6 +35,8 @@ class Rect(Crate, IAttributable):
 		
 		self.position()
 	
+		super().sail() 
+		
 	
 	def position(self):
 		
@@ -46,23 +46,26 @@ class Rect(Crate, IAttributable):
 		
 		anchor = round( (self.anchor + 1) / 2 * self.outerDim() )
 		
+		
+		offset = self.attributes.get('pos', Rect.attributes['pos'])
+		if type(offset) is float:
+			offset = A[ round(offset * self.parent.dim) ]
+		
 		# can't make use of array operations as each value depends on a condition
 		# and i feel like trying would end up degrading the legibility of the code even further
-		offset = Array([round( pos * parent_dim ) if type(pos) is float else pos
-			for pos,parent_dim in zip(self.attributes['pos'],self.parent.dim)])
+		# offset = Array([round( pos * parent_dim ) if type(pos) is float else pos
+		# 	for pos,parent_dim in zip(self.attributes.get('pos', Rect.attributes['pos']),self.parent.dim)])
 		
 		self.pos = origin - anchor + offset
 		
-		if hasattr(self.parent, 'innerPos'):
-			self.pos += self.parent.innerPos()
+		# if hasattr(self.parent, 'innerPos'):
+		# 	self.pos += self.parent.innerPos()
 			
-		
-		return;
-		if 'title' in self.classes:
-			print(self, f"{origin=} {offset=} {self.parent=} {self.parent.dim=} {self.pos=} {self.dim=}")
-	
 	
 	def dimension(self):
+		# print(f"{self} ~ {self.attributes}")
+		# print(f"{self.parent=}")
+		# print(f"{self} {self.dim=} {self.parent.dim=} {self.parent=}")
 		self.dim = Array([round(dim * parent_dim) if type(dim) is float else dim
 			for dim,parent_dim in zip(self.dim,self.parent.innerDim() if hasattr(self.parent,'innerDim') else self.parent.dim)])
 	

@@ -15,8 +15,13 @@ ITERATION °4
 	Attribute Separator : ';'
 °4:
 	Scrapped Non Evaluated Values : 3/4
+°5:
+	Attribute Separator : '	'
+	Attribute Grouping : ''
+	Attribute Declaration : '~'
+	Reimplemented Attribute Evaluation : 1/2
 
 ```
 
-#main ~ [0,0]:pos	[0,0]:origin	[0,0]:anchor	[0.075,100]:dim	"FF00FF":bg
-	.hello ~ [0,-0.5]:pos	[0,1]:origin	[1.6,1.0]:dim	"00FFFF80":bg
+Box#main ~ [0,0]:pos	[0,0]:origin	[0,0]:anchor	[0.075,100]:dim	"FF00FF":bg
+	Box.hello ~ [0,-0.5]:pos	[0,1]:origin	[1.6,1.0]:dim	"00FFFF80":bg

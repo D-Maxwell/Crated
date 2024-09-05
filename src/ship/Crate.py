@@ -1,8 +1,9 @@
 import json
 import re
 
-from ext.Console import log
-from ext.BetterBuiltins import Unpackable, IAttributable, Array
+from ext.LoftyLogger import log
+from ext.BetterBuiltins import Unpackable, IAttributable, A
+from ext.ColourConverter import rgba
 from ship.Node import Node
 
 
@@ -18,24 +19,38 @@ class Crate(Node, IAttributable):
 	# The use of a global is not compulsory in order to interface with an Attributable,
 	# but truly a conveniance as for defaults to remain accessible.
 	
+	attributes:dict = Unpackable({
+		'rank' : 0,
+		'parent' : None,
+		'tag' : "",
+		('id','classes') : [],
+	})
+	
 	
 	def __init__(self, **kwargs):
 		
-		self.rank = kwargs.get('rank', 0)
-		self.parent = kwargs.get('parent', 0)
-		self.tag = kwargs.get('tag', 0)
-		self.id = kwargs.get('id', 0)
+		# self.rank = kwargs.get('rank', 0)
+		# self.parent = kwargs.get('parent', 0)
+		# self.tag = kwargs.get('tag', 0)
 		
-		self.attributes:dict = Unpackable({
-			'rank' : 0,
-			'parent' : None,
-			'tag' : "",
-			('id','classes') : [],
-		})
+		self.attributes:dict = kwargs
 		
 		super().__init__()
+		
+		# print(f"{self.id=} {vars(self)=} {Crate.attributes=}")
+		IAttributable.__init__(self, Crate.attributes)
+		
+		
+		for attr,value in self.attributes.items():
+			if not hasattr(self, attr): continue;
+			## i like this but what about type tolerance i.e. Rect.bg
+			# self.attributes[attr] = type(eval(f"self.{attr}"))(value)
+			if type(value) is list:
+				self.attributes[attr] = A[value]
+		
 		IAttributable.__init__(self, self.attributes)
-		# print(f"{self.id=} {self.attributes=}")
+		# print(f"{self.id=} {vars(self)=}")
+		# print()
 		
 	
 	def __repr__(self):
@@ -46,11 +61,8 @@ class Crate(Node, IAttributable):
 		])
 	
 	
+	## TODO : -> Parser
 	def pack(self, line:str):
-		
-		# print()
-		# print(f"{self=} {self.attributes=}")
-		# print()
 		
 		# closing '}' is useless, spec needs revisions
 		# line = line.strip()[ : -1]
@@ -88,6 +100,7 @@ class Crate(Node, IAttributable):
 			
 			try:
 				exec(f"from ship.containers.{tag} import {tag}")
+				
 				# print(f"{tag=}")
 				return eval(tag)
 			except:
@@ -102,19 +115,87 @@ class Crate(Node, IAttributable):
 		
 		for prop in properties.split('\t'):
 			value, name = prop.strip().split(':')
-			evaluated = eval(value)
-			self.attributes[name] = Array(evaluated) if type(evaluated) is list else evaluated
-			
-		# print()
+			evaluated = eval(value.replace('$','self.').replace('^','parent.'))
+			self.attributes[name] = A[evaluated] if type(evaluated) is list else evaluated
 		
-		# print(f"{self=} {self.attributes=}")
+		# print(f"{self} {self.attributes=}")
 		
 		IAttributable.__init__(self, self.attributes)
+		print(self, '\n¤ '.join([f"{attr} : {value}" for attr,value in vars(self).items()]))
+		print()
 		
-		# print(f"{self=} {self.attributes=}")
+		
+	
+	def embark(self):
+		
+		tab = '\t' # can't have shit in fstrings
+		log(f"{self.rank*tab}{self} {self.attributes}",
+			type='INFO')
+		
+		# print(f"{self=} {type(self)}")
+		self.surface = type(self.parent.surface)(self.dim).convert_alpha()
 		
 		
-	def sail(self): pass
+		for crate in self.children:
+			crate.parent = self
+			crate.embark()
+		
+		
+		self.sail()
+		
+	
+	
+	def sail(self):
+		
+		def cascade():
+			for crate in self.children:
+				crate.sail()
+				
+		
+		if hasattr(self, 'surface'):
+			self.surface = type(self.parent.surface)(self.outerDim()).convert_alpha()
+			
+			self.coat()
+			
+		# self.sail.cascade()
+		for crate in self.children:
+			crate.sail()
+		
+		# self.coat.cascade()
+		self.parent.surface.blit(
+			self.surface,
+			# can't have +x+y if individual surfaces are +x-y
+			# TODO : surface wrapper, module independant (imagemagick)
+			# A[0,cargo.dim[1]] + (A[1,-1] * self.outerPos())
+			# self.outerPos() - (self.parent.outerPos() if type(self.parent) is Crate else A[0,0])
+			
+			(self.parent.innerPos() if hasattr(self.parent,'innerPos') else A[0,0]) + self.outerPos()
+		)
+	
+	
+	
+	def coat(self):
+		"""overwritable"""
+		
+		def cascade():
+			self.parent.surface.blit(
+				self.surface,
+				# can't have +x+y if individual surfaces are +x-y
+				# TODO : surface wrapper, module independant (imagemagick)
+				# A[0,cargo.dim[1]] + (A[1,-1] * self.outerPos())
+				# self.outerPos() - (self.parent.outerPos() if type(self.parent) is Crate else A[0,0])
+				
+				(self.parent.innerPos() if hasattr(self.parent,'innerPos') else A[0,0]) + self.outerPos()
+			)
+		
+		
+		self.surface.fill(rgba(self.bg))
+		
+		
+			
+					
+		
+		
 	
 	
 	
@@ -278,29 +359,29 @@ class Crate(Node, IAttributable):
 		# print(self.pos)
 	
 	
-	def hook(self, path:str):
-
-		tag = id = class_ = None
-
-		# deconstruct path
-		for idx in range(len(path)):
-			marker = idx
-			if path[idx] in ['#','.','(']:
-				if marker == 0:
-					tag = path[marker:idx]
-				if path[marker] == '#':
-					id = path[marker:idx]
-				if path[marker] == '.':
-					class_ = path[marker:idx]
-			#while path[idx] not in ['#','.','(',')']:
-
-		print(tag,id,class_)
-		# find matching crate
-		out = []
-		for crate in self.cargo.freight:
-			if (tag is None or crate.tag == tag) and (id is None or crate.id == id) and (class_ is None or crate.classes == class_):
-				out.append(crate)
-		return out
+	# def hook(self, path:str):
+		
+	# 	tag = id = class_ = None
+		
+	# 	# deconstruct path
+	# 	for idx in range(len(path)):
+	# 		marker = idx
+	# 		if path[idx] in ['#','.','(']:
+	# 			if marker == 0:
+	# 				tag = path[marker:idx]
+	# 			if path[marker] == '#':
+	# 				id = path[marker:idx]
+	# 			if path[marker] == '.':
+	# 				class_ = path[marker:idx]
+	# 		#while path[idx] not in ['#','.','(',')']:
+		
+	# 	print(tag,id,class_)
+	# 	# find matching crate
+	# 	out = []
+	# 	for crate in self.cargo.freight:
+	# 		if (tag is None or crate.tag == tag) and (id is None or crate.id == id) and (class_ is None or crate.classes == class_):
+	# 			out.append(crate)
+	# 	return out
 
 # c = Crate()
 # c.hook("#main")

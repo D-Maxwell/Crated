@@ -7,6 +7,8 @@ os.system('') # may fix escape sequences being ignored in some older NT versions
 ## 		  this would allow for bulk printing --potentially more efficient--, data logging to disk (easier at the very least), and dynamic tty refresh ('\r' shenanigans)
 
 
+# WARN(), FAIL() ?
+
 
 logTypes = {
 	'ERROR' : [255,0,0],

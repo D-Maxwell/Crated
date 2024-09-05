@@ -12,22 +12,26 @@ class Box(Rect):
 	})
 	
 	
-	def __init__(self):
-		super().__init__()
+	def __init__(self, **kwargs):
 		IAttributable.__init__(self, Box.attributes)
+		super().__init__(**kwargs)
 	
 	
 	
 	def outerDim(self):
+		# print(f"{self} {self.dim=}")
 		return self.dim + self.paddout * 2
 	
 	
 	def innerDim(self):
-		# print(f"{self.dim=} {self.padding=} {self.dim - self.padding * 2=}")
 		return self.dim - self.padding * 2
 	
 	
 	def innerPos(self):
-		# print(f"{self.pos=} {self.paddout=} {self.padding=} {self.pos + self.paddout + self.padding=}")
-		return self.pos + self.paddout + self.padding
+		return self.pos + self.padding
+	
+	
+	def outerPos(self):
+		# print(f"{self.pos=} {self.paddout=}")
+		return self.pos - self.paddout
 

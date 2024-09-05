@@ -1,21 +1,25 @@
 from ship.Node import Node
-from ship.containers.Rect import Rect
+from ship.Crate import Crate
 
 
 
 class Dock(Node):
-	def __init__(self, id:str=None, data=None, children:list=None):
-		super().__init__(id,data,children)
+	def __init__(self, children:[Crate]=None):
+		super().__init__("root", children)
 		
-		self.selected_cargo:"" = self.children[0].id
-
-	def embark(self, *cargo):
+		self.ungated = True
+		
+		# self.focus:str = self.children[0].id
+		self.steer(self.children[0].id)
+	
+	def embark(self):
 		for cargo in self.children:
 			cargo.dock = self
 			cargo.embark()
+			
 	
-	def goto(self, cargo_id):
-		self.selected_cargo = cargo_id
+	def steer(self, cargo_id):
+		self.focus:str = cargo_id
 	
 	
 	def sail(self): pass
