@@ -4,7 +4,8 @@ class IAttributable:
 	def __init__(self, dictionary:dict):
 		for field,value in dictionary.items():
 			if hasattr(value, 'copy'): value = type(value)(value.copy()) # python pointers are such a mess
-			exec(f"self.{field} = value")
+			# exec(f"self.{field} = value")
+			setattr(self, field, value)
 
 
 
